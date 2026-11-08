@@ -1,0 +1,29 @@
+---
+import '@fontsource/host-grotesk/500.css';
+import '../styles/site.css';
+import { FAVICON, ARROW } from '../lib/icons.js';
+---
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Página no encontrada — ConTesta</title>
+<link rel="icon" type="image/svg+xml" href={FAVICON}>
+<style>
+  .nf { min-height: 100svh; display: grid; place-content: center; gap: 24px; padding: 24px; text-align: center; }
+  .nf h1 { margin: 0; font-size: clamp(56px, 12vw, 160px); font-weight: 500; letter-spacing: -.04em; line-height: .9; }
+  .nf h1 em { font-style: normal; color: var(--blue); }
+  .nf p { margin: 0; color: var(--muted); font-size: 18px; }
+  .nf .btn { justify-self: center; }
+</style>
+</head>
+<body>
+<main class="nf">
+  <h1>4<em>0</em>4</h1>
+  <p>Esta página no existe. · This page doesn’t exist.</p>
+  <a class="btn btn-blue" href="/"><span>ConTesta</span><Fragment set:html={ARROW} /></a>
+</main>
+</body>
+</html>

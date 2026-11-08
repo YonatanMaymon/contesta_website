@@ -1,0 +1,332 @@
+---
+// La página completa en un idioma. Todo el texto sale del HTML generado; el JS solo agrega movimiento.
+import '@fontsource/host-grotesk/400.css';
+import '@fontsource/host-grotesk/500.css';
+import '@fontsource/host-grotesk/600.css';
+import '@fontsource/heebo/400.css';
+import '@fontsource/heebo/500.css';
+import '@fontsource/heebo/600.css';
+import '../styles/site.css';
+import { I18N, LANGS } from '../data/content.js';
+import { META, SITE_URL } from '../data/meta.js';
+import * as R from '../lib/render.js';
+import { ARROW, LOGO_MARK, GLOBE_SVG, CHEV_SVG, DRAG_SVG, WA_SVG, FAVICON } from '../lib/icons.js';
+
+interface Props { lang: string }
+const { lang } = Astro.props;
+const t = I18N[lang];
+const meta = META[lang];
+const dir = lang === 'he' ? 'rtl' : 'ltr';
+const canonical = new URL(R.langPath(lang), SITE_URL).href;
+
+const hl = R.headline(lang);
+const fc = R.focus(lang);
+const svc = R.services(lang);
+const team = R.team(lang);
+const proc = R.processSection(lang);
+const faq = R.faq(lang);
+const fin = R.finalSection(lang);
+const foot = R.footer(lang);
+const waBtn = `<span class="wa-ico" aria-hidden="true">${WA_SVG}</span><span>${t.wa}</span>`;
+
+const orgSchema = {
+  '@context': 'https://schema.org', '@type': 'MarketingAgency', name: 'ConTesta', url: SITE_URL,
+  logo: new URL('/img/logo-oscuro.png', SITE_URL).href, email: 'agustin@agenciacontesta.com', telephone: '+34603316674',
+  sameAs: ['https://www.instagram.com/agenciacontesta', 'https://www.linkedin.com/company/agencia-con-testa/'],
+  address: { '@type': 'PostalAddress', addressLocality: 'Madrid', addressCountry: 'ES' },
+};
+---
+<!doctype html>
+<html lang={lang} dir={dir}>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{meta.title}</title>
+<meta name="description" content={meta.description}>
+<link rel="canonical" href={canonical}>
+{LANGS.map(([c]) => <link rel="alternate" hreflang={c} href={new URL(R.langPath(c), SITE_URL).href}>)}
+<link rel="alternate" hreflang="x-default" href={new URL('/', SITE_URL).href}>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="ConTesta">
+<meta property="og:title" content={meta.title}>
+<meta property="og:description" content={meta.description}>
+<meta property="og:url" content={canonical}>
+<meta property="og:image" content={new URL('/og.png', SITE_URL).href}>
+<meta property="og:locale" content={meta.locale}>
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#f4eee2">
+<link rel="icon" type="image/svg+xml" href={FAVICON}>
+<link rel="preload" as="image" href="/img/busto-cabeza.webp" type="image/webp">
+<script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
+<script type="application/ld+json" set:html={JSON.stringify(faq.schema)} />
+</head>
+<body>
+<div class="loader" id="loader" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label={meta.loading}>
+  <div class="ld-inner">
+    <div class="ld-scan" aria-hidden="true">
+      <span class="ld-num ld-ghost">100<small>%</small></span>
+      <span class="ld-num ld-dim"><b id="ld-num">0</b><small>%</small></span>
+      <span class="ld-num ld-on" id="ld-reveal"><b id="ld-num2">0</b><small>%</small></span>
+      <span class="ld-line" id="ld-line"></span>
+    </div>
+  </div>
+</div>
+<script is:inline>
+/* Pantalla de carga: avanza con la carga real de la página (no pasa de 90% hasta el evento load)
+   y nunca dura menos de ~2,4 s para que el escaneo se llegue a ver. Se muestra una vez por visita. */
+(() => {
+  const html = document.documentElement;
+  const el = document.getElementById('loader');
+  let resolveDone;
+  window.__loader = new Promise(r => (resolveDone = r));
+  let seen = false;
+  try { seen = sessionStorage.getItem('contesta-loaded') === '1'; sessionStorage.setItem('contesta-loaded', '1'); } catch (e) {}
+  if (seen) { el.remove(); resolveDone(); return; }
+  html.classList.add('is-loading');
+  if (!location.hash && 'scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+  const num = document.getElementById('ld-num'), num2 = document.getElementById('ld-num2');
+  const reveal = document.getElementById('ld-reveal'), line = document.getElementById('ld-line');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const MIN = reduced ? 400 : 2400;
+  let loaded = document.readyState === 'complete', p = 0, start = performance.now(), finished = false;
+  addEventListener('load', () => { loaded = true; });
+
+  const ease = t => 1 - Math.pow(1 - t, 2.2);
+  function frame(now) {
+    const t = Math.min(1, (now - start) / MIN);
+    const target = ease(t) * 100;
+    const cap = loaded ? 100 : 90;
+    p += (Math.min(target, cap) - p) * .18;
+    if (loaded && t >= 1 && p > 99.4) p = 100;
+    const v = Math.round(p);
+    num.textContent = num2.textContent = v;
+    el.setAttribute('aria-valuenow', v);
+    reveal.style.clipPath = 'inset(0 0 ' + (100 - p) + '% 0)';
+    line.style.top = 'calc(' + p + '% - 1px)';
+    line.style.opacity = p >= 100 ? 0 : 1;
+    if (p < 100) return requestAnimationFrame(frame);
+    complete();
+  }
+  function complete() {
+    if (finished) return;
+    finished = true;
+    // Pausa breve en 100% y la pantalla se levanta como una cortina
+    setTimeout(() => {
+      el.classList.add('is-done');
+      html.classList.remove('is-loading');
+      resolveDone();
+      setTimeout(() => el.remove(), 1000);
+    }, reduced ? 50 : 320);
+  }
+  requestAnimationFrame(frame);
+  // Seguridad: si algo frena la animación (pestaña en segundo plano, etc.), a los 8 s se termina igual
+  setTimeout(() => {
+    if (finished) return;
+    num.textContent = num2.textContent = 100;
+    reveal.style.clipPath = 'inset(0 0 0 0)';
+    line.style.opacity = 0;
+    complete();
+  }, 8000);
+})();
+</script>
+
+<header class="nav" id="nav">
+  <a class="logo" href="#top" aria-label="ConTesta">
+    <Fragment set:html={LOGO_MARK} />
+    <img class="logo-dark" src="/img/logo-oscuro.png" alt="ConTesta" width="1080" height="186">
+    <img class="logo-light" src="/img/logo-claro.png" alt="" width="1080" height="186">
+    <span class="logo-r" aria-hidden="true">®</span>
+  </a>
+
+  <ul class="menu" id="menu">
+    <li><a href="#casos">{t.casos}</a></li>
+    <li><a href="#servicios">{t.servicios}</a></li>
+    <li><a href="#testas">{t.testas}</a></li>
+    <li><a href="#proceso">{t.proceso}</a></li>
+    <li><a href="#faq">{t.faq}</a></li>
+    <li class="menu-langs" id="menu-langs" role="group" aria-label={meta.langLabel} set:html={R.menuLangs(lang)} />
+  </ul>
+
+  <div class="actions">
+    <div class="lang" id="lang">
+      <button class="lang-btn" type="button" aria-haspopup="true" aria-expanded="false" aria-label={meta.langLabel}>
+        <Fragment set:html={GLOBE_SVG} />
+        <span class="lang-code">{lang.toUpperCase()}</span>
+        <Fragment set:html={CHEV_SVG} />
+      </button>
+      <ul class="lang-menu" id="lang-menu" set:html={R.langMenu(lang)} />
+    </div>
+    <a class="btn btn-blue" href="#contacto"><span>{t.cta}</span><Fragment set:html={ARROW} /></a>
+    <button class="burger" type="button" aria-label={meta.menu} aria-expanded="false" aria-controls="menu"><span></span></button>
+  </div>
+</header>
+
+<main id="top">
+
+  <section class="hero" aria-labelledby="hero-title" data-bg="--bg">
+    <div class="hero-head">
+      <h1 id="hero-title" aria-label={hl.label} set:html={hl.h1} />
+      <p class="hero-sub" id="hero-sub" set:html={hl.sub} />
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="brain" id="brain">
+        <div class="brain-base" aria-hidden="true" style={lang === 'he' ? 'transform:scaleX(-1)' : undefined}></div>
+        <Fragment set:html={fc.windows} />
+      </div>
+      <svg class="wires" id="wires" aria-hidden="true"></svg>
+      <Fragment set:html={fc.labels} />
+    </div>
+
+    <div class="hero-cta">
+      <a class="btn btn-blue" href="#contacto"><span>{t.cta}</span><Fragment set:html={ARROW} /></a>
+    </div>
+
+    <div class="trust">
+      <div class="trust-row">
+        <div class="trust-key">
+          <p class="trust-label"><small>{t.trusted}</small></p>
+          <div class="trust-logos" dir="ltr">
+            <img src="/img/clientes/lenovo.svg" alt="Lenovo" class="is-lenovo" draggable="false">
+            <img src="/img/clientes/motorola.svg" alt="Motorola" class="is-motorola" draggable="false">
+          </div>
+        </div>
+        <div class="marquee">
+          <div class="marquee-track" id="marquee-track" dir="ltr" set:html={R.clientsMarquee()} />
+        </div>
+      </div>
+      <div class="trust-row">
+        <p class="trust-label"><b>{t.certs}</b></p>
+        <div class="marquee"><ul class="marquee-track cert-track" id="cert-track" dir="ltr" set:html={R.certTrack()} /></div>
+      </div>
+      <div class="trust-row">
+        <p class="trust-label"><b>{t.press}</b></p>
+        <ul class="press-list" id="press-list" dir="ltr" set:html={R.pressList(lang)} />
+      </div>
+    </div>
+  </section>
+
+  <section class="cases" id="casos" aria-labelledby="cases-title" data-bg="--sky">
+    <div class="cases-inner">
+      <h2 id="cases-title" set:html={R.casesTitle(lang)} />
+      <div class="cases-track" id="cases-track" set:html={R.cases(lang)} />
+    </div>
+  </section>
+  <div class="case-veil" id="case-veil" aria-hidden="true"></div>
+  <div class="case-open" id="case-open" role="dialog" aria-modal="true" aria-labelledby="co-title"><div class="co-scroll"></div></div>
+
+  <section class="services" id="servicios" aria-labelledby="svc-title" data-bg="--paper">
+    <div class="svc-head">
+      <h2 id="svc-title" set:html={svc.title} />
+      <p id="svc-intro" set:html={svc.intro} />
+    </div>
+    <div class="svc-list" id="svc-list" set:html={svc.list} />
+  </section>
+
+  <section class="team" id="testas" aria-labelledby="team-title" data-bg="--navy" data-dark>
+    <div class="team-hello" aria-hidden="true" dir="ltr"><div class="team-hello-track" id="team-hello" set:html={team.hello} /></div>
+    <div class="team-wrap">
+      <div class="team-info">
+        <div class="team-head"><h2 id="team-title" set:html={team.title} /><p id="team-intro">{team.intro}</p></div>
+        <div class="team-stat"><b><span id="team-cnt">13</span></b><span id="team-stat-text">{team.stat}</span></div>
+      </div>
+      <div class="team-globe-col">
+        <div class="team-globe" id="team-globe" dir="ltr">
+          <canvas id="globe" aria-hidden="true"></canvas>
+          <div class="globe-pins" id="globe-pins" set:html={team.pins} />
+          <span class="globe-hint"><Fragment set:html={DRAG_SVG} /><span id="globe-hint-text">{team.hint}</span></span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="process" id="proceso" aria-labelledby="proc-title" data-bg="--sand">
+    <div class="proc-pin" id="proc-pin">
+      <div class="proc-wrap">
+        <div class="proc-side">
+          <span class="proc-eyebrow"><i></i><span id="proc-hint">{proc.hint}</span></span>
+          <h2 id="proc-title" set:html={proc.title} />
+          <p class="proc-intro" id="proc-intro">{proc.intro}</p>
+          <div class="faces proc-human"><span class="faces-row" aria-hidden="true" set:html={R.facesRow(3)} /><span id="proc-center">{proc.center}</span></div>
+          <div class="proc-now" id="proc-step" aria-live="polite" set:html={proc.step} />
+          <div class="proc-segs" id="proc-segs" set:html={proc.segs} />
+          <div class="proc-list" id="proc-list" set:html={proc.list} />
+        </div>
+        <div class="proc-card-wrap" id="proc-card-wrap">
+        <div class="proc-card" id="proc-card">
+          <svg class="proc-svg" id="proc-svg" viewBox="0 0 600 560" aria-hidden="true" set:html={proc.svg} />
+          <div class="proc-chips" id="proc-chips" set:html={proc.chips} />
+          <div class="proc-card-top" aria-hidden="true"><span class="proc-live"><b id="proc-count">01</b>&nbsp;/ 05</span></div>
+        </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq" aria-labelledby="faq-title" data-bg="--paper">
+    <div class="faq-wrap">
+      <div class="faq-side">
+        <span class="faq-tag"><i></i>FAQ</span>
+        <h2 id="faq-title" set:html={faq.title} />
+        <div class="faq-help">
+          <div class="faq-help-row">
+            <span class="faces-row" aria-hidden="true" set:html={R.facesRow(3)} />
+            <p id="faq-sub" set:html={faq.sub} />
+          </div>
+          <a class="btn btn-ghost" href={R.WA_URL} target="_blank" rel="noopener" set:html={waBtn} />
+        </div>
+      </div>
+      <div class="faq-list" id="faq-list" set:html={faq.items} />
+    </div>
+  </section>
+
+  <section class="final" id="contacto" aria-labelledby="final-title" data-bg="--navy" data-dark>
+    <div class="final-wrap">
+      <div class="final-main">
+        <h2 id="final-title" set:html={fin.title} />
+        <div class="faces"><span class="faces-row" aria-hidden="true" set:html={R.facesRow(4)} /><span>{t.faces}</span></div>
+      </div>
+      <div class="final-form">
+        <form class="convo" id="convo" novalidate>
+          <p class="convo-line" id="convo-line" set:html={fin.line} />
+          <div class="convo-ideas" id="convo-ideas" set:html={fin.ideas} />
+          <div class="convo-foot">
+            <button class="convo-send" id="convo-send" type="submit" set:html={fin.send} />
+            <div class="convo-alt" id="convo-alt" set:html={fin.alt} />
+          </div>
+        </form>
+        <p class="convo-done" id="convo-done" hidden aria-live="polite"></p>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot" data-bg="--ink" data-dark>
+    <div class="foot-wrap">
+      <div class="foot-top">
+        <div class="foot-pitch">
+          <h2 id="foot-pitch" set:html={foot.pitch} />
+          <div class="foot-ctas">
+            <a class="btn btn-blue" href="#contacto"><span id="foot-cta">{foot.cta}</span><Fragment set:html={ARROW} /></a>
+            <a class="btn btn-ghost" href={R.WA_URL} target="_blank" rel="noopener" set:html={waBtn} />
+          </div>
+        </div>
+        <nav class="foot-cols" id="foot-cols" aria-label="Footer" set:html={foot.cols} />
+      </div>
+      <div class="foot-bottom">
+        <p id="foot-rights">{foot.rights}</p>
+        <button class="foot-top-btn" id="foot-top" type="button"><span id="foot-top-txt">{foot.top}</span><span class="foot-ring"><svg viewBox="0 0 42 42" aria-hidden="true"><circle class="r-bg" cx="21" cy="21" r="19"/><circle class="r-fg" cx="21" cy="21" r="19"/></svg><i aria-hidden="true">↑</i></span></button>
+      </div>
+    </div>
+  </footer>
+
+</main>
+<div class="cursor-ring" id="cursor-ring" aria-hidden="true"></div>
+<div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+<script src="https://www.sortlist.es/api/badge-embed?agencySlug=agencia-con-testa&agencyUuid=8c2be706-e812-46e9-8e2b-c4787d5e1900&color=neutral&hue=900&type=trusted-partner&country=ES&locale=en" defer is:inline></script>
+<script>
+  import { start } from '../scripts/main.js';
+  start();
+</script>
+</body>
+</html>
