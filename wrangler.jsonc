@@ -1,0 +1,11 @@
+// Cloudflare deploy config: the site is fully static, so Cloudflare only serves the files in dist/.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "contesta-website",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./dist",
+    // Serve dist/404.html with a 404 status for unknown URLs
+    "not_found_handling": "404-page"
+  }
+}
