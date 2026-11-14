@@ -13,14 +13,16 @@ const $ = id => document.getElementById(id);
 export function start() {
   gsap.registerPlugin(ScrollTrigger);
   const code = document.documentElement.lang || 'es';
-  const rtl = code === 'he';
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
   // Mientras está la pantalla de carga, las animaciones de GSAP esperan
   const loaderDone = window.__loader || Promise.resolve();
   gsap.globalTimeline.pause();
   loaderDone.then(() => gsap.globalTimeline.resume());
   const narrow = matchMedia('(max-width: 860px)');
-  const FORM_ENDPOINT = import.meta.env.PUBLIC_FORM_ENDPOINT || '';
+  // El formulario se envía al Worker de la propia web (worker/index.js)
+  const FORM_ENDPOINT = import.meta.env.PUBLIC_FORM_ENDPOINT || '/api/contact';
+  // Eventos de Google Analytics (si GA4 está cargado)
+  const track = (name, params = {}) => { if (window.gtag) window.gtag('event', name, params); };
 
   /* ---------- Titular: la palabra sube y cambia de idioma ---------- */
   (() => {
@@ -28,7 +30,7 @@ export function start() {
     const word = document.querySelector('.rot-word');
     const swoosh = document.querySelector('.swoosh path');
     if (reduced || !word) return;
-    const dir = rtl ? -1 : 1;
+    const dir = 1;
     const len = swoosh ? swoosh.getTotalLength() : 0;
     if (swoosh) gsap.set(swoosh, { strokeDasharray: len, strokeDashoffset: len, autoAlpha: 0 });
     const rotTl = gsap.timeline({ delay: 1.4 });
@@ -193,7 +195,7 @@ export function start() {
     el.addEventListener('pointercancel', endDrag);
     el.addEventListener('dragstart', e => e.preventDefault()); // la insignia de Sortlist no trae draggable="false"
   }
-  setupMarquee($('marquee-track'), 48, rtl ? -1 : 1);
+  setupMarquee($('marquee-track'), 48, 1);
   const certTrack = $('cert-track');
   // El script de Sortlist puede llenar una sola insignia: cuando aparece, se copia a las demás
   const slBadges = [...certTrack.querySelectorAll('.sortlist-badge')];
@@ -204,7 +206,7 @@ export function start() {
     slBadges.forEach(n => { if (!n.childNodes.length) n.innerHTML = done.innerHTML; });
   });
   slBadges.forEach(n => slObserver.observe(n, { childList: true }));
-  setupMarquee(certTrack, 36, rtl ? -1 : 1);
+  setupMarquee(certTrack, 36, 1);
 
   /* ---------- Casos ---------- */
   const casesTrack = $('cases-track');
@@ -830,22 +832,39 @@ export function start() {
   convo.addEventListener('submit', async e => {
     e.preventDefault();
     if (!checkAll(true)) { const bad = convo.querySelector('[aria-invalid="true"]'); bad && bad.focus(); return; }
-    const data = { nombre: $('f-nombre').value.trim(), email: $('f-email').value.trim(), falta: fFalta.value.trim(), idioma: code };
-    const mailto = () => `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(t.subject)}&body=${encodeURIComponent(`${t.l[0]} ${data.nombre}. ${t.l[1]} ${data.email}. ${t.l[2]} ${data.falta}.`)}`;
-    // Sin servidor configurado, se abre el mail con los datos ya escritos
-    if (FORM_ENDPOINT) {
-      const send = $('convo-send');
-      send.disabled = true;
-      try {
-        const res = await fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
-        if (!res.ok) throw new Error(res.status);
-      } catch (err) { location.href = mailto(); }
-      send.disabled = false;
-    } else location.href = mailto();
+    const data = { nombre: $('f-nombre').value.trim(), email: $('f-email').value.trim(), falta: fFalta.value.trim(), idioma: code, pagina: location.pathname,
+      web: convo.querySelector('.convo-hp')?.value || '', token: (window.turnstile && window.turnstile.getResponse && window.turnstile.getResponse()) || '' };
+    const send = $('convo-send');
+    send.disabled = true;
+    let ok = false;
+    try {
+      const res = await fetch(FORM_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(data) });
+      ok = res.ok;
+    } catch (err) { ok = false; }
+    send.disabled = false;
     const done = $('convo-done');
-    done.innerHTML = `${t.done.replace('{n}', data.nombre.replace(/[<>&"]/g, ''))}<small>${t.wa} <a href="${WA_URL}" target="_blank" rel="noopener" dir="ltr">${WA_NUMBER}</a></small>`;
-    convo.hidden = true; done.hidden = false;
+    const alt = `<small>${t.wa} <a href="${WA_URL}" target="_blank" rel="noopener" dir="ltr">${WA_NUMBER}</a> · <a href="mailto:${CONTACT_EMAIL}">${CONTACT_EMAIL}</a></small>`;
+    if (ok) {
+      // El "gracias" solo aparece si el mensaje llegó de verdad
+      track('generate_lead', { form: 'contacto', idioma: code });
+      done.classList.remove('is-error');
+      done.innerHTML = `${t.done.replace('{n}', data.nombre.replace(/[<>&"]/g, ''))}${alt}`;
+      convo.hidden = true;
+    } else {
+      done.innerHTML = `${t.err}${alt}`;
+      done.classList.add('is-error');
+      if (window.turnstile && window.turnstile.reset) window.turnstile.reset();
+    }
+    done.hidden = false;
     if (!reduced) gsap.from(done, { y: 30, opacity: 0, duration: .8, ease: 'expo.out' });
+  });
+
+  // Clics que cuentan como conversión en Analytics: WhatsApp y los botones "Hablemos"
+  document.addEventListener('click', e => {
+    const a = e.target.closest('a'); if (!a) return;
+    const href = a.getAttribute('href') || '';
+    if (href.includes('wa.me/')) track('whatsapp_click', { idioma: code });
+    else if (href === '#contacto') track('cta_click', { idioma: code, servicio: a.dataset.ask || '' });
   });
 
   // CTA por servicio: baja al formulario con ese servicio sumado a "A mi marca le falta"
@@ -995,15 +1014,18 @@ export function start() {
       document.documentElement.classList.add('has-cursor');
       const dx = gsap.quickTo(dot, 'x', { duration: .1 }), dy = gsap.quickTo(dot, 'y', { duration: .1 });
       const rx = gsap.quickTo(ring, 'x', { duration: .45, ease: 'power3' }), ry = gsap.quickTo(ring, 'y', { duration: .45, ease: 'power3' });
+      // Solo aparece sobre las tarjetas de casos; en el resto de la página queda el cursor normal
+      let overCase = false;
       addEventListener('mousemove', e => {
         dx(e.clientX); dy(e.clientY); rx(e.clientX); ry(e.clientY);
-        gsap.to([dot, ring], { opacity: 1, duration: .3, overwrite: 'auto' });
+        gsap.to([dot, ring], { opacity: overCase ? 1 : 0, duration: .3, overwrite: 'auto' });
       }, { passive: true });
       document.addEventListener('mouseleave', () => gsap.to([dot, ring], { opacity: 0, duration: .3 }));
       // Blanco sobre lo oscuro (secciones, fotos, botones azules); negro sobre el resto
       const DARK = '[data-dark], .nav.on-dark, .faq-item.is-open, .co-quote, .btn-blue, .convo-send, .pchip.is-cur, .co-close, .case-media, .co-media, .svc-item.is-active .svc-arrow, .case-veil';
       const LIGHT = '.gp-hi, .convo.is-ready .convo-send, .foot-top-btn .foot-ring';
       document.addEventListener('mouseover', e => {
+        overCase = !!e.target.closest('.cases-track .case');
         ring.classList.toggle('is-hover', !!e.target.closest('a, button, .case'));
         const light = !!e.target.closest(DARK) && !e.target.closest(LIGHT);
         dot.classList.toggle('is-light', light); ring.classList.toggle('is-light', light);
@@ -1057,7 +1079,7 @@ export function start() {
       .from(nav, { y: -24, opacity: 0, duration: .9, ease: 'power3.out', clearProps: 'transform' })
       .from('.logo, .menu li, .actions > *', { y: -8, opacity: 0, duration: .6, ease: 'power3.out', stagger: .05, clearProps: 'transform' }, .25)
       // Titular palabra por palabra, desde abajo
-      .from('.hero h1 .wi', { yPercent: 115, rotation: 4, duration: 1.1, ease: 'expo.out', stagger: .07 }, .3)
+      .from('.hero .hero-title .wi', { yPercent: 115, rotation: 4, duration: 1.1, ease: 'expo.out', stagger: .07 }, .3)
       .from('.hero-sub', { y: 20, opacity: 0, duration: 1, ease: 'power3.out' }, .75)
       .from(base, { opacity: 0, scale: .94, duration: 1.4, ease: 'power3.out' }, .35)
       .from('.hero-cta > *', { y: 16, opacity: 0, duration: .7, ease: 'power3.out', stagger: .08, clearProps: 'transform,opacity' }, 1.2)

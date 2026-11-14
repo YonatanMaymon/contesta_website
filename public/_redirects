@@ -1,0 +1,21 @@
+# Redirecciones 301 de las URLs de la web anterior (Wix) a la página nueva
+/proyectos /#casos 301
+/proyectos/ /#casos 301
+/proyectos-1 /#casos 301
+/proyectos-1/* /#casos 301
+/en/proyectos /en/#casos 301
+/en/proyectos-1/* /en/#casos 301
+/it/proyectos /it/#casos 301
+/it/proyectos-1/* /it/#casos 301
+/de/proyectos /de/#casos 301
+/de/proyectos-1/* /de/#casos 301
+/fr/proyectos /fr/#casos 301
+/fr/proyectos-1/* /fr/#casos 301
+# Idiomas sin barra final (URLs viejas de Wix): 301 en vez del 307 automático
+/en /en/ 301
+/it /it/ 301
+/de /de/ 301
+/fr /fr/ 301
+# Versión en hebreo retirada
+/he / 301
+/he/* / 301

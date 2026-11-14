@@ -3,20 +3,17 @@
 import '@fontsource/host-grotesk/400.css';
 import '@fontsource/host-grotesk/500.css';
 import '@fontsource/host-grotesk/600.css';
-import '@fontsource/heebo/400.css';
-import '@fontsource/heebo/500.css';
-import '@fontsource/heebo/600.css';
 import '../styles/site.css';
-import { I18N, LANGS } from '../data/content.js';
-import { META, SITE_URL } from '../data/meta.js';
+import { I18N, LANGS, SVC_ORDER, SVC_TEXT, CASES } from '../data/content.js';
+import { META, SITE_URL, TURNSTILE_SITEKEY } from '../data/meta.js';
 import * as R from '../lib/render.js';
+import Analytics from './Analytics.astro';
 import { ARROW, LOGO_MARK, GLOBE_SVG, CHEV_SVG, DRAG_SVG, WA_SVG, FAVICON } from '../lib/icons.js';
 
 interface Props { lang: string }
 const { lang } = Astro.props;
 const t = I18N[lang];
 const meta = META[lang];
-const dir = lang === 'he' ? 'rtl' : 'ltr';
 const canonical = new URL(R.langPath(lang), SITE_URL).href;
 
 const hl = R.headline(lang);
@@ -29,15 +26,33 @@ const fin = R.finalSection(lang);
 const foot = R.footer(lang);
 const waBtn = `<span class="wa-ico" aria-hidden="true">${WA_SVG}</span><span>${t.wa}</span>`;
 
+// Datos estructurados: sin direcciones (no son oficinas físicas) y reseñas sin puntuación agregada
+const svcText = SVC_TEXT[lang] || SVC_TEXT.es;
+const strip = (s: string) => s.replace(/<[^>]+>/g, '');
 const orgSchema = {
-  '@context': 'https://schema.org', '@type': 'MarketingAgency', name: 'ConTesta', url: SITE_URL,
-  logo: new URL('/img/logo-oscuro.png', SITE_URL).href, email: 'agustin@agenciacontesta.com', telephone: '+34603316674',
-  sameAs: ['https://www.instagram.com/agenciacontesta', 'https://www.linkedin.com/company/agencia-con-testa/'],
-  address: { '@type': 'PostalAddress', addressLocality: 'Madrid', addressCountry: 'ES' },
+  '@context': 'https://schema.org', '@type': 'MarketingAgency', '@id': `${SITE_URL}/#org`,
+  name: 'ConTesta', url: SITE_URL, description: meta.description, foundingDate: '2019',
+  logo: new URL('/img/logo-oscuro.png', SITE_URL).href, image: new URL('/og.png', SITE_URL).href,
+  email: 'agustin@agenciacontesta.com', telephone: '+34603316674',
+  areaServed: ['Spain', 'Argentina', 'United States', 'Latin America', 'Europe'].map(name => ({ '@type': 'Place', name })),
+  knowsLanguage: ['es', 'en', 'it', 'de', 'fr', 'pt'],
+  sameAs: [
+    'https://www.linkedin.com/company/agencia-con-testa/', 'https://www.instagram.com/agenciacontesta',
+    'https://www.sortlist.com/agency/agencia-con-testa', 'https://clutch.co/profile/contesta',
+    'https://www.designrush.com/agency/profile/contesta',
+  ],
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog', name: strip(svcText.title),
+    itemListElement: SVC_ORDER.map(id => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name: R.svcName(id, lang), description: strip(svcText.d[id]), provider: { '@id': `${SITE_URL}/#org` } } })),
+  },
+  review: CASES.filter(c => c.quote).map(c => ({
+    '@type': 'Review', reviewBody: c.quote[lang] || c.quote.es,
+    author: { '@type': 'Person', name: c.person, jobTitle: c.role && (c.role[lang] || c.role.es) },
+  })),
 };
 ---
 <!doctype html>
-<html lang={lang} dir={dir}>
+<html lang={lang}>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -59,6 +74,7 @@ const orgSchema = {
 <link rel="preload" as="image" href="/img/busto-cabeza.webp" type="image/webp">
 <script type="application/ld+json" set:html={JSON.stringify(orgSchema)} />
 <script type="application/ld+json" set:html={JSON.stringify(faq.schema)} />
+<Analytics />
 </head>
 <body>
 <div class="loader" id="loader" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label={meta.loading}>
@@ -134,8 +150,8 @@ const orgSchema = {
 <header class="nav" id="nav">
   <a class="logo" href="#top" aria-label="ConTesta">
     <Fragment set:html={LOGO_MARK} />
-    <img class="logo-dark" src="/img/logo-oscuro.png" alt="ConTesta" width="1080" height="186">
-    <img class="logo-light" src="/img/logo-claro.png" alt="" width="1080" height="186">
+    <img class="logo-dark" src="/img/logo-oscuro.webp" alt="ConTesta" width="540" height="93">
+    <img class="logo-light" src="/img/logo-claro.webp" alt="" width="540" height="93">
     <span class="logo-r" aria-hidden="true">®</span>
   </a>
 
@@ -164,15 +180,15 @@ const orgSchema = {
 
 <main id="top">
 
-  <section class="hero" aria-labelledby="hero-title" data-bg="--bg">
+  <section class="hero" aria-labelledby="hero-sub" data-bg="--bg">
     <div class="hero-head">
-      <h1 id="hero-title" aria-label={hl.label} set:html={hl.h1} />
-      <p class="hero-sub" id="hero-sub" set:html={hl.sub} />
+      <p class="hero-title" id="hero-title" aria-label={hl.label} set:html={hl.h1} />
+      <h1 class="hero-sub" id="hero-sub" set:html={hl.sub} />
     </div>
 
     <div class="stage" id="stage">
       <div class="brain" id="brain">
-        <div class="brain-base" aria-hidden="true" style={lang === 'he' ? 'transform:scaleX(-1)' : undefined}></div>
+        <div class="brain-base" aria-hidden="true"></div>
         <Fragment set:html={fc.windows} />
       </div>
       <svg class="wires" id="wires" aria-hidden="true"></svg>
@@ -295,6 +311,8 @@ const orgSchema = {
             <button class="convo-send" id="convo-send" type="submit" set:html={fin.send} />
             <div class="convo-alt" id="convo-alt" set:html={fin.alt} />
           </div>
+          <input class="convo-hp" type="text" name="web" tabindex="-1" autocomplete="off" aria-hidden="true">
+          {TURNSTILE_SITEKEY && <div class="cf-turnstile convo-captcha" data-sitekey={TURNSTILE_SITEKEY} data-size="flexible" data-appearance="interaction-only" data-language={lang}></div>}
         </form>
         <p class="convo-done" id="convo-done" hidden aria-live="polite"></p>
       </div>
@@ -323,6 +341,7 @@ const orgSchema = {
 </main>
 <div class="cursor-ring" id="cursor-ring" aria-hidden="true"></div>
 <div class="cursor-dot" id="cursor-dot" aria-hidden="true"></div>
+{TURNSTILE_SITEKEY && <script is:inline src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
 <script src="https://www.sortlist.es/api/badge-embed?agencySlug=agencia-con-testa&agencyUuid=8c2be706-e812-46e9-8e2b-c4787d5e1900&color=neutral&hue=900&type=trusted-partner&country=ES&locale=en" defer is:inline></script>
 <script>
   import { start } from '../scripts/main.js';

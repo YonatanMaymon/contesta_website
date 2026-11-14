@@ -1,0 +1,56 @@
+---
+// Páginas legales: misma tipografía y colores que la home, en una columna de lectura
+import '@fontsource/host-grotesk/400.css';
+import '@fontsource/host-grotesk/500.css';
+import '../styles/site.css';
+import Analytics from './Analytics.astro';
+import { LEGAL_PAGES, LEGAL_PATHS, LEGAL_UI } from '../data/legal.js';
+import { SITE_URL } from '../data/meta.js';
+import { FAVICON, LOGO_MARK } from '../lib/icons.js';
+
+interface Props { lang: 'es' | 'en'; page: 'privacy' | 'cookies' | 'notice' }
+const { lang, page } = Astro.props;
+const p = LEGAL_PAGES[lang][page];
+const ui = LEGAL_UI[lang];
+const paths = LEGAL_PATHS[lang];
+const other = lang === 'es' ? 'en' : 'es';
+const home = lang === 'es' ? '/' : '/en/';
+const canonical = new URL(paths[page], SITE_URL).href;
+---
+<!doctype html>
+<html lang={lang}>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{p.title} — ConTesta</title>
+<meta name="description" content={p.description}>
+<link rel="canonical" href={canonical}>
+<link rel="alternate" hreflang={lang} href={canonical}>
+<link rel="alternate" hreflang={other} href={new URL(LEGAL_PATHS[other][page], SITE_URL).href}>
+<meta name="theme-color" content="#f4eee2">
+<link rel="icon" type="image/svg+xml" href={FAVICON}>
+<Analytics />
+</head>
+<body class="lg-body">
+<header class="lg-nav">
+  <a class="logo" href={home} aria-label="ConTesta">
+    <Fragment set:html={LOGO_MARK} />
+    <img class="logo-dark" src="/img/logo-oscuro.webp" alt="ConTesta" width="540" height="93">
+  </a>
+  <a class="lg-back" href={home}>← {ui.back}</a>
+</header>
+<main class="lg-main">
+  <h1>{p.title}</h1>
+  <article class="lg-text" set:html={p.html} />
+</main>
+<footer class="lg-foot">
+  <span>© {new Date().getFullYear()} ConTesta</span>
+  <nav aria-label={ui.notice}>
+    <a href={paths.notice}>{ui.notice}</a>
+    <a href={paths.privacy}>{ui.privacy}</a>
+    <a href={paths.cookies}>{ui.cookies}</a>
+    <a href={LEGAL_PATHS[other][page]} hreflang={other} lang={other}>{other === 'en' ? 'English' : 'Español'}</a>
+  </nav>
+</footer>
+</body>
+</html>

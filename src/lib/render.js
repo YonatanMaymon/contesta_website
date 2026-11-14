@@ -2,7 +2,7 @@
 // así el texto llega en el HTML y los buscadores lo leen. Son las mismas plantillas del diseño original.
 import {
   I18N, CLIENTS, SERVICES, NAMES, NAMES_I18N, PRESS, CERTS, CASES_TITLE, CASES, QUOTE_MARKS, OPEN_UI, TAG_SVC,
-  ICON_X, ICON_NEXT, SVC_ORDER, SVC_TEXT, SVC_ARROW, SVC_UI, SVC_CLIENTS, TEAM, OFFICES, OFFICE_IL, TEAM_TEXT,
+  ICON_X, ICON_NEXT, SVC_ORDER, SVC_TEXT, SVC_ARROW, SVC_UI, SVC_CLIENTS, TEAM, OFFICES, TEAM_TEXT,
   COUNTRIES, FACES, PERSON_SVG, PROCESS_TEXT, PROC_ICONS, PN, FAQ_TEXT, FAQ_PLUS, FAQ_AV, CONTACT_EMAIL, WA_NUMBER,
   FINAL_TEXT, CHECK_SVG, SEND_SVG, FOOT_TEXT, BLOG_URL, LANGS,
 } from '../data/content.js';
@@ -60,14 +60,11 @@ export function headline(code) {
 
 /* ---------- Cabeza: ventanas de servicio y etiquetas ---------- */
 export function focus(code) {
-  const rtl = code === 'he';
   const windows = [], labels = [];
   SERVICES.forEach((s, i) => {
     const name = svcName(s.id, code);
     const num = String(i + 1).padStart(2, '0');
-    // En hebreo se espeja la composición entera
-    const x = rtl ? 100 - s.x : s.x;
-    const side = rtl ? (s.side === 'left' ? 'right' : 'left') : s.side;
+    const x = s.x, side = s.side;
     windows.push(`<a class="focus ${side}" href="#servicio-${s.id}" aria-label="${name}" data-i="${i}" style="left:${x}%;top:${s.y}%"><span class="f-num">${num}</span><span class="f-name">${name}</span></a>`);
     labels.push(`<a class="label ${side}" href="#servicio-${s.id}" data-i="${i}" data-ly="${s.ly}"><small>${num}</small><span>${name}</span></a>`);
   });
@@ -99,6 +96,9 @@ export function certTrack() {
 /* ---------- Casos ---------- */
 const personName = (c, code) => (c.personI18n && c.personI18n[code]) || c.person || null;
 
+const caseSrcset = img => `/img/casos/${img}-700.webp 700w, /img/casos/${img}-1400.webp 1400w`;
+const caseAlt = (c, h) => stripTags(`${c.client}${h && h !== c.client ? ' — ' + h : ''}`).replace(/"/g, '&quot;');
+
 export const casesTitle = code => CASES_TITLE[code] || CASES_TITLE.es;
 
 export function cases(code) {
@@ -107,9 +107,11 @@ export function cases(code) {
   return CASES.map((c, i) => {
     const [h, stat, did] = c.text[code] || c.text.es;
     const quote = c.quote && (c.quote[code] || c.quote.es);
+    // La primera tarjeta carga enseguida; el resto, apenas se acerca a la pantalla
+    const load = i === 0 ? 'eager' : 'lazy';
     return `
       <article class="case" data-case="${i}" tabindex="0" role="button" aria-haspopup="dialog">
-        <div class="case-media"><img src="/img/casos/${c.img}.jpg" alt="" loading="lazy" width="1400" height="1050">
+        <div class="case-media"><img src="/img/casos/${c.img}-1400.webp" srcset="${caseSrcset(c.img)}" sizes="(max-width: 860px) 92vw, 30vw" alt="${caseAlt(c, h)}" loading="${load}" width="1400" height="1050">
           <span class="case-client"><i>${c.client[0]}</i>${c.client}</span>
           <span class="case-more"><i>+</i>${more}</span></div>
         <div class="case-body">
@@ -140,7 +142,7 @@ export function caseOpen(i, code) {
         <button class="co-close" type="button" aria-label="${u.close}">${ICON_X}</button>
       </div>
       <div class="co-hero">
-        <div class="co-media"><img src="/img/casos/${d.img}.jpg" alt="" width="1400" height="1050"></div>
+        <div class="co-media"><img src="/img/casos/${d.img}-1400.webp" srcset="${caseSrcset(d.img)}" sizes="(max-width: 860px) 100vw, 50vw" alt="${caseAlt(d, d.h)}" width="1400" height="1050"></div>
         <div class="co-head">
           <span class="case-n">0${i + 1} / 0${total}</span>
           <h3 id="co-title" dir="auto">${d.h}</h3>
@@ -190,11 +192,13 @@ export function services(code) {
 }
 
 /* ---------- Las testas ---------- */
-export const facesRow = n => FACES.slice(0, n).map(id => `<span class="face"><img src="/img/equipo/${id}.png" alt="" width="100" height="100" loading="lazy"></span>`).join('');
+export const facesRow = n => FACES.slice(0, n).map(id => `<span class="face"><img src="/img/equipo/${id}.webp" alt="" width="100" height="100" loading="lazy"></span>`).join('');
+
+const TEAM_ALT = { es: 'Integrante del equipo de ConTesta en', en: 'ConTesta team member in', it: 'Membro del team di ConTesta in', de: 'ConTesta-Teammitglied in', fr: 'Membre de l’équipe ConTesta –' };
 
 export function team(code) {
   const t = TEAM_TEXT[code] || TEAM_TEXT.es, names = COUNTRIES[code] || COUNTRIES.es;
-  const words = [...new Set(TEAM.map(m => m.hi)), 'Ciao!', 'שלום!'];
+  const words = [...new Set(TEAM.map(m => m.hi)), 'Ciao!'];
   return {
     title: emLast((I18N[code] || I18N.es).testas),
     intro: t.intro,
@@ -203,7 +207,7 @@ export function team(code) {
     hello: [0, 1].map(() => words.map(w => `<span>${w}</span>`).join('')).join(''),
     pins: TEAM.map((m, i) => `
       <button class="gp" type="button" data-member="${i}" aria-label="${names[m.cc]}">
-        <span class="gp-face${m.noPhoto ? ' gp-ph' : ''}">${m.noPhoto ? PERSON_SVG : `<img src="/img/equipo/${m.id}.png" alt="" loading="lazy" draggable="false">`}</span>
+        <span class="gp-face${m.noPhoto ? ' gp-ph' : ''}">${m.noPhoto ? PERSON_SVG : `<img src="/img/equipo/${m.id}.webp" alt="${TEAM_ALT[code] || TEAM_ALT.es} ${names[m.cc]}" loading="lazy" draggable="false">`}</span>
         <span class="gp-hi">${m.hi}<small>${names[m.cc]} · <time data-tz="${m.tz}"></time></small></span>
       </button>`).join(''),
   };
@@ -224,7 +228,7 @@ export const procD = (() => {
 
 export const procStep = (code, i) => {
   const t = PROCESS_TEXT[code] || PROCESS_TEXT.es;
-  return `<div class="pnow-num proc-l"><b>0${i + 1}</b><sup>/05</sup></div><h3 class="proc-l" dir="auto">${t.steps[i][0]}</h3><p class="proc-l" dir="auto">${t.steps[i][1]}</p>`;
+  return `<div class="pnow-num proc-l"><b>0${i + 1}</b><sup>/05</sup></div><p class="proc-l pnow-h" dir="auto">${t.steps[i][0]}</p><p class="proc-l" dir="auto">${t.steps[i][1]}</p>`;
 };
 
 export function processSection(code) {
@@ -300,14 +304,14 @@ export function footer(code) {
   const t = FOOT_TEXT[code] || FOOT_TEXT.es, ui = I18N[code] || I18N.es;
   const link = (href, txt, ext) => `<li><a href="${href}"${ext ? ' target="_blank" rel="noopener"' : ''}>${txt}</a></li>`;
   const nav = [['#casos', ui.casos], ['#servicios', ui.servicios], ['#testas', ui.testas], ['#proceso', ui.proceso], ['#faq', ui.faq],
-    ...(BLOG_URL ? [[BLOG_URL, code === 'he' ? 'בלוג' : 'Blog']] : [])];
+    ...(BLOG_URL ? [[BLOG_URL, 'Blog']] : [])];
   return {
     pitch: `${t.pitch[0]}<em>${t.pitch[1]}</em>${t.pitch[2]}`,
     cta: ui.cta,
     cols: `
       <div class="foot-col"><h3>${t.nav}</h3><ul>${nav.map(([h, x]) => link(h, x, h === BLOG_URL)).join('')}</ul></div>
       <div class="foot-col"><h3>${ui.servicios}</h3><ul>${SVC_ORDER.map(id => link('#servicio-' + id, svcName(id, code))).join('')}</ul></div>
-      <div class="foot-col"><h3>${t.offices}</h3>${(code === 'he' ? [...OFFICES, OFFICE_IL] : OFFICES).map((o, i) => `<div class="foot-office"><b>${o.city}<time data-tz="${o.tz}"></time></b><span dir="auto">${o.hq ? (TEAM_TEXT[code] || TEAM_TEXT.es).hq + ' · ' : ''}${t.c[i]}</span>${o.addr ? `<span dir="ltr">${o.addr}</span>` : ''}</div>`).join('')}</div>
+      <div class="foot-col"><h3>${t.offices}</h3>${OFFICES.map((o, i) => `<div class="foot-office"><b>${o.city}<time data-tz="${o.tz}"></time></b><span dir="auto">${o.hq ? (TEAM_TEXT[code] || TEAM_TEXT.es).hq + ' · ' : ''}${t.c[i]}</span>${o.addr ? `<span dir="ltr">${o.addr}</span>` : ''}</div>`).join('')}</div>
       <div class="foot-col"><h3>${t.contact}</h3><ul>
         ${link(WA_URL, `WhatsApp&nbsp;<span dir="ltr">${WA_NUMBER}</span>`, true)}
         ${link('mailto:' + CONTACT_EMAIL, CONTACT_EMAIL)}

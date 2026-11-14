@@ -1,5 +1,5 @@
 // Contenido del sitio. Extraído tal cual del diseño original (design-html.html).
-// Textos en 6 idiomas: es, en, it, de, fr, he.
+// Textos en 5 idiomas: es, en, it, de, fr.
 
 // h: renglones del titular; {rot} = palabra que rota (cabeza, head, Kopf, tête → testa)
 export const I18N = {
@@ -24,15 +24,11 @@ export const I18N = {
         wa: 'Écrivez-nous sur WhatsApp', trusted: 'Nous travaillons avec', word: 'testa',
         h: ['Nous faisons du marketing', 'avec {rot}.'],
         sub: 'Agence de marketing digital. Ads, SEO, web et réseaux sociaux pour des clients dans <b>+<span class="count">10</span> pays</b>.' },
-  he: { certs: 'הסמכות והכרה', press: 'כתבו עלינו', pressMore: 'לכתבה ↗', faces: 'אנחנו 13 טסטות', casos: 'פרויקטים', servicios: 'שירותים', testas: 'הטסטות', proceso: 'תהליך', faq: 'שאלות נפוצות', cta: 'בואו נדבר', ia: 'AI',
-        wa: 'כתבו לנו בוואטסאפ', trusted: 'אנחנו עובדים עם', word: 'טסטה',
-        h: ['אנחנו עושים שיווק', 'עם {rot}'],
-        sub: 'סוכנות שיווק דיגיטלי. פרסום ממומן, SEO, אתרים ורשתות חברתיות ללקוחות <b>ביותר מ־<span class="count">10</span> מדינות</b>.' },
 };
 
 export const ROTATION = ['cabeza', 'head', 'Kopf', 'tête'];
 
-export const LANGS = [['es', 'Español'], ['en', 'English'], ['it', 'Italiano'], ['de', 'Deutsch'], ['fr', 'Français'], ['he', 'עברית']];
+export const LANGS = [['es', 'Español'], ['en', 'English'], ['it', 'Italiano'], ['de', 'Deutsch'], ['fr', 'Français']];
 
 // [archivo, nombre, alto en px]. El alto se ajusta a ojo por logo para igualar el peso visual, no es parejo a propósito.
 export const CLIENTS = [
@@ -61,8 +57,8 @@ export const NAMES = { web: 'Web design', seo: 'SEO', ads: 'Ads', branding: 'Bra
 
 // Estos sí cambian con el idioma
 export const NAMES_I18N = {
-  geo: { es: 'Posicionamiento GEO', en: 'GEO (AI search)', it: 'Posizionamento GEO', de: 'GEO-Optimierung', fr: 'Référencement GEO', he: 'GEO – קידום במנועי AI' },
-  dev: { es: 'Desarrollo', en: 'Development', it: 'Sviluppo', de: 'Entwicklung', fr: 'Développement', he: 'פיתוח' },
+  geo: { es: 'Posicionamiento GEO', en: 'GEO (AI search)', it: 'Posizionamento GEO', de: 'GEO-Optimierung', fr: 'Référencement GEO' },
+  dev: { es: 'Desarrollo', en: 'Development', it: 'Sviluppo', de: 'Entwicklung', fr: 'Développement' },
 };
 
 // Para sumar una nota: agregar el logo en img/prensa/ y una línea acá. [archivo, medio, alto en px, link]
@@ -79,20 +75,18 @@ export const CERTS = [
   ['ods', 'Objetivos de Desarrollo Sostenible (ONU)', 138, 138],
 ];
 
-export const CASES_TITLE = { es: 'Casos con <em>testa</em>', en: 'Cases with <em>testa</em>', it: 'Casi con la <em>testa</em>', de: 'Cases mit <em>Testa</em>', fr: 'Cas avec <em>testa</em>', he: 'פרויקטים עם <em>טסטה</em>' };
+export const CASES_TITLE = { es: 'Casos con <em>testa</em>', en: 'Cases with <em>testa</em>', it: 'Casi con la <em>testa</em>', de: 'Cases mit <em>Testa</em>', fr: 'Cas avec <em>testa</em>' };
 
 // text: [titular, texto del número, qué hicimos]. Las reseñas sin traducción se muestran en su idioma original
 export const CASES = [
   { id: 'mabra', img: 'mabra-google-ads', client: 'Mabra', tags: ['Google Ads'], n: 32, person: 'David Abramson',
-    role: { es: 'fundador de Mabra', en: 'founder of Mabra', it: 'fondatore di Mabra', de: 'Gründer von Mabra', fr: 'fondateur de Mabra', he: 'מייסד Mabra' },
-    personI18n: { he: 'דוד אברמסון' },
+    role: { es: 'fundador de Mabra', en: 'founder of Mabra', it: 'fondatore di Mabra', de: 'Gründer von Mabra', fr: 'fondateur de Mabra' },
     quote: {
       es: 'Crecimos gracias a las campañas y estamos vendiendo más.',
       en: 'We grew thanks to the campaigns and we’re selling more.',
       it: 'Siamo cresciuti grazie alle campagne e stiamo vendendo di più.',
       de: 'Dank der Kampagnen sind wir gewachsen und verkaufen mehr.',
       fr: 'Nous avons grandi grâce aux campagnes et nous vendons plus.',
-      he: 'צמחנו בזכות הקמפיינים ואנחנו מוכרים יותר.',
     },
     open: {
       es: ['Quería posicionarse online y vender más, pero sus campañas no le hablaban al problema real de sus clientes.', 'Redefinimos el público y su pain point, optimizamos las keywords y renovamos los creativos de Google Ads.', '+32% de conversiones en 3 meses.'],
@@ -100,7 +94,6 @@ export const CASES = [
       it: ['Voleva posizionarsi online e vendere di più, ma le sue campagne non parlavano del vero problema dei suoi clienti.', 'Abbiamo ridefinito il pubblico e il suo pain point, ottimizzato le keyword e rinnovato le creatività di Google Ads.', '+32% di conversioni in 3 mesi.'],
       de: ['Mabra wollte online sichtbar werden und mehr verkaufen, aber die Kampagnen trafen nicht das eigentliche Problem der Kunden.', 'Wir haben die Zielgruppe und ihren Pain Point neu definiert, die Keywords optimiert und die Creatives für Google Ads erneuert.', '+32 % Conversions in 3 Monaten.'],
       fr: ['Mabra voulait se positionner en ligne et vendre davantage, mais ses campagnes ne parlaient pas du vrai problème de ses clients.', 'Nous avons redéfini le public et son pain point, optimisé les mots-clés et renouvelé les créas Google Ads.', '+32 % de conversions en 3 mois.'],
-      he: ['המותג רצה לבסס נוכחות ברשת ולמכור יותר, אבל הקמפיינים לא דיברו אל הבעיה האמיתית של הלקוחות.', 'הגדרנו מחדש את הקהל ואת נקודת הכאב שלו, שיפרנו את מילות המפתח וחידשנו את הקריאייטיב ב־Google Ads.', '+32% המרות ב־3 חודשים.'],
     },
     text: {
     es: ['El pain point que Mabra no estaba nombrando', 'de conversiones en 3 meses', 'Redefinimos el target y su pain point, optimizamos las keywords y mejoramos los creativos.'],
@@ -108,10 +101,9 @@ export const CASES = [
     it: ['Il pain point che Mabra non stava nominando', 'di conversioni in 3 mesi', 'Abbiamo ridefinito il target e il suo pain point, ottimizzato le keyword e migliorato le creatività.'],
     de: ['Der Pain Point, den Mabra nicht benannte', 'Conversions in 3 Monaten', 'Wir haben die Zielgruppe und ihren Pain Point neu definiert, die Keywords optimiert und die Creatives verbessert.'],
     fr: ['Le pain point que Mabra ne nommait pas', 'de conversions en 3 mois', 'Nous avons redéfini la cible et son pain point, optimisé les mots-clés et amélioré les créas.'],
-    he: ['ה־pain point ש־Mabra לא קראה לו בשם', 'המרות ב־3 חודשים', 'הגדרנו מחדש את קהל היעד ואת נקודת הכאב שלו, שיפרנו את מילות המפתח ואת הקריאייטיב.'],
   } },
   { id: 'cantus', img: 'cantus-web', client: 'Cantus', tags: ['SEO', 'Web'], n: 120, person: 'Zachary Ernst',
-    role: { es: 'founder de Cantus Works', en: 'founder of Cantus Works', it: 'founder di Cantus Works', de: 'Founder von Cantus Works', fr: 'fondateur de Cantus Works', he: 'מייסד Cantus Works' },
+    role: { es: 'founder de Cantus Works', en: 'founder of Cantus Works', it: 'founder di Cantus Works', de: 'Founder von Cantus Works', fr: 'fondateur de Cantus Works' },
     quote: { es: 'ConTesta entendió rápido qué necesitábamos y lo ejecutó con criterio. Estamos muy conformes con el trabajo.' },
     open: {
       es: ['No aparecía en Google.', 'Optimizamos la estructura del sitio y mejoramos el domain rating.', '+120% de clics orgánicos en 5 meses.'],
@@ -119,7 +111,6 @@ export const CASES = [
       it: ['Non compariva su Google.', 'Abbiamo ottimizzato la struttura del sito e migliorato il domain rating.', '+120% di clic organici in 5 mesi.'],
       de: ['Cantus tauchte bei Google nicht auf.', 'Wir haben die Seitenstruktur optimiert und das Domain Rating verbessert.', '+120 % organische Klicks in 5 Monaten.'],
       fr: ['Cantus n’apparaissait pas sur Google.', 'Nous avons optimisé la structure du site et amélioré le domain rating.', '+120 % de clics organiques en 5 mois.'],
-      he: ['לא הופיעו בגוגל.', 'שיפרנו את מבנה האתר ואת ה־Domain Rating.', '+120% קליקים אורגניים ב־5 חודשים.'],
     },
     text: {
     es: ['De invisible a encontrado en Google', 'de clics orgánicos en 5 meses', 'Optimizamos la estructura del sitio y mejoramos el domain rating.'],
@@ -127,17 +118,15 @@ export const CASES = [
     it: ['Da invisibile a trovato su Google', 'di clic organici in 5 mesi', 'Abbiamo ottimizzato la struttura del sito e migliorato il domain rating.'],
     de: ['Von unsichtbar zu gefunden bei Google', 'organische Klicks in 5 Monaten', 'Wir haben die Seitenstruktur optimiert und das Domain Rating verbessert.'],
     fr: ['D’invisible à trouvé sur Google', 'de clics organiques en 5 mois', 'Nous avons optimisé la structure du site et amélioré le domain rating.'],
-    he: ['מבלתי נראים לנמצאים בגוגל', 'קליקים אורגניים ב־5 חודשים', 'שיפרנו את מבנה האתר ואת ה־Domain Rating.'],
   } },
   { id: 'thirteen', img: 'thirteen-web', client: 'Thirteen GmbH', tags: ['SEO'], n: 39, person: 'Maxim Holzapfel',
-    role: { es: 'director general de Thirteen GmbH', en: 'CEO of Thirteen GmbH', it: 'CEO di Thirteen GmbH', de: 'CEO von Thirteen GmbH', fr: 'CEO de Thirteen GmbH', he: 'מנכ״ל Thirteen GmbH' },
+    role: { es: 'director general de Thirteen GmbH', en: 'CEO of Thirteen GmbH', it: 'CEO di Thirteen GmbH', de: 'CEO von Thirteen GmbH', fr: 'CEO de Thirteen GmbH' },
     open: {
       es: ['Necesitaban crecer en Google con SEO.', 'Los acompañamos con una estrategia de SEO de punta a punta.', '+39% de clics en 5 meses: crecieron muchísimo.'],
       en: ['They needed to grow on Google with SEO.', 'We supported them with an end-to-end SEO strategy.', '+39% clicks in 5 months: they grew enormously.'],
       it: ['Dovevano crescere su Google con la SEO.', 'Li abbiamo accompagnati con una strategia SEO completa.', '+39% di clic in 5 mesi: sono cresciuti moltissimo.'],
       de: ['Sie wollten mit SEO bei Google wachsen.', 'Wir haben sie mit einer durchgängigen SEO-Strategie begleitet.', '+39 % Klicks in 5 Monaten: Sie sind enorm gewachsen.'],
       fr: ['Ils devaient se développer sur Google grâce au SEO.', 'Nous les avons accompagnés avec une stratégie SEO de bout en bout.', '+39 % de clics en 5 mois : ils ont énormément progressé.'],
-      he: ['הם היו צריכים לצמוח בגוגל עם SEO.', 'ליווינו אותם באסטרטגיית SEO מקצה לקצה.', '+39% קליקים ב־5 חודשים: הם צמחו מאוד.'],
     },
     quote: {
       es: 'Trabajar con ConTesta no solo fue profesional, sino también eficiente. Nos sentimos valorados como clientes, bien informados y con pocas dudas que resolver.',
@@ -149,7 +138,6 @@ export const CASES = [
     it: ['Sono cresciuti su Google con la SEO', 'di clic in 5 mesi', null],
     de: ['Mit SEO bei Google gewachsen', 'Klicks in 5 Monaten', null],
     fr: ['Ils ont grandi sur Google grâce au SEO', 'de clics en 5 mois', null],
-    he: ['צמחו בגוגל עם SEO', 'קליקים ב־5 חודשים', null],
   } },
 ];
 
@@ -162,7 +150,6 @@ export const OPEN_UI = {
   it: { more: 'Vedi il caso', problem: 'Problema', did: 'Cosa abbiamo fatto', result: 'Risultato', close: 'Chiudi', next: 'Caso successivo' },
   de: { more: 'Case ansehen', problem: 'Problem', did: 'Was wir gemacht haben', result: 'Ergebnis', close: 'Schließen', next: 'Nächster Case' },
   fr: { more: 'Voir le cas', problem: 'Problème', did: 'Ce que nous avons fait', result: 'Résultat', close: 'Fermer', next: 'Cas suivant' },
-  he: { more: 'לצפייה', problem: 'הבעיה', did: 'מה עשינו', result: 'התוצאה', close: 'סגירה', next: 'הפרויקט הבא' },
 };
 
 export const TAG_SVC = { 'Google Ads': 'ads', SEO: 'seo', Web: 'web' };
@@ -233,25 +220,13 @@ export const SVC_TEXT = {
     influencers: 'Des créateurs en affinité qui parlent de votre marque avec leur propre voix. Nous les choisissons, négocions et mesurons.',
     ia: 'Automatisations et IA appliquées à votre marketing : contenu, service client et analyse de données.',
   } },
-  he: { title: 'מה חסר לך?', intro: 'את <b>הראש</b> אנחנו מביאים.', d: {
-    ads: 'קמפיינים בגוגל, מטא, טיקטוק, לינקדאין ובמודעות החדשות של ChatGPT, נמדדים לפי מכירות ולידים, לא לפי קליקים.',
-    seo: 'שימצאו אתכם בגוגל כשמחפשים אתכם: טכני, תוכן וסמכות.',
-    geo: 'אנחנו עובדים על המותג שלכם כדי שיופיע בתשובות של ChatGPT, Gemini ו־Perplexity כשמישהו שואל על מה שאתם מוכרים.',
-    web: 'אתרים מהירים, ברורים ובנויים למכור, על WordPress, Webflow או Shopify.',
-    dev: 'תוכנה בהתאמה אישית: אפליקציות, פלטפורמות ואינטגרציות. מה שהעסק שלכם צריך ושום תבנית לא נותנת.',
-    social: 'אסטרטגיה, תוכן וקהילה באינסטגרם, טיקטוק, לינקדאין ומטא, עם דוח חודשי.',
-    branding: 'מותג שמזהים וזוכרים: שם, זהות חזותית וספר מותג.',
-    pr: 'כתבות, ראיונות והופעות בתקשורת שבונה אמון.',
-    influencers: 'יוצרי תוכן מתאימים שמדברים על המותג שלכם בקול שלהם. אנחנו בוחרים, מנהלים משא ומתן ומודדים.',
-    ia: 'אוטומציות ו־AI לשיווק שלכם: תוכן, שירות לקוחות וניתוח נתונים.',
-  } },
 };
 
 export const SVC_ARROW = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4"/></svg>';
 
 export const SVC_UI = {
   es: ['Qué hacemos', 'Con quién lo trabajamos'], en: ['What we do', 'Who we do it with'], it: ['Cosa facciamo', 'Con chi lo facciamo'],
-  de: ['Was wir machen', 'Für wen wir es machen'], fr: ['Ce que nous faisons', 'Avec qui nous le faisons'], he: ['מה אנחנו עושים', 'עם מי אנחנו עובדים'],
+  de: ['Was wir machen', 'Für wen wir es machen'], fr: ['Ce que nous faisons', 'Avec qui nous le faisons'],
 };
 
 export const SVC_CLIENTS = {
@@ -274,13 +249,12 @@ export const TEAM = [
   { id: 'de1', lon: 13.4,  lat: 52.5,  dx: 5,    dy: -9,  hi: 'Hallo!',   cc: 'DE', tz: 'Europe/Berlin' },
 ];
 
-// Sedes: se muestran solo en el footer, sin direcciones. Tel Aviv se suma en la versión en hebreo.
+// Sedes: se muestran solo en el footer.
 export const OFFICES = [
   { city: 'Madrid', hq: true, addr: 'Calle de Villaviciosa', tz: 'Europe/Madrid' },
   { city: 'Buenos Aires', addr: 'Maipú', tz: 'America/Argentina/Buenos_Aires' },
   { city: 'Miami', addr: 'Northeast 2nd Avenue', tz: 'America/New_York' },
 ];
-export const OFFICE_IL = { city: 'Tel Aviv', tz: 'Asia/Jerusalem' };
 
 export const TEAM_TEXT = {
   es: { intro: 'Somos un equipo joven e internacional.', stat: 'testas', hq: 'Sede central', hint: 'Arrastra para girar' },
@@ -288,7 +262,6 @@ export const TEAM_TEXT = {
   it: { intro: 'Siamo un team giovane e internazionale.', stat: 'teste', hq: 'Sede centrale', hint: 'Trascina per ruotare' },
   de: { intro: 'Wir sind ein junges, internationales Team.', stat: 'Testas', hq: 'Hauptsitz', hint: 'Ziehen zum Drehen' },
   fr: { intro: 'Nous sommes une équipe jeune et internationale.', stat: 'testas', hq: 'Siège', hint: 'Glissez pour faire tourner' },
-  he: { intro: 'אנחנו צוות צעיר ובינלאומי.', stat: 'טסטות', hq: 'מטה', hint: 'גררו כדי לסובב' },
 };
 
 export const COUNTRIES = {
@@ -297,7 +270,6 @@ export const COUNTRIES = {
   it: { US: 'Stati Uniti', MX: 'Messico', CO: 'Colombia', UY: 'Uruguay', AR: 'Argentina', FR: 'Francia', DE: 'Germania', ES: 'Spagna' },
   de: { US: 'Vereinigte Staaten', MX: 'Mexiko', CO: 'Kolumbien', UY: 'Uruguay', AR: 'Argentinien', FR: 'Frankreich', DE: 'Deutschland', ES: 'Spanien' },
   fr: { US: 'États-Unis', MX: 'Mexique', CO: 'Colombie', UY: 'Uruguay', AR: 'Argentine', FR: 'France', DE: 'Allemagne', ES: 'Espagne' },
-  he: { US: 'ארצות הברית', MX: 'מקסיקו', CO: 'קולומביה', UY: 'אורוגוואי', AR: 'ארגנטינה', FR: 'צרפת', DE: 'גרמניה', ES: 'ספרד' },
 };
 
 export const FACES = ['es1', 'ar', 'de1', 'us', 'fr'];
@@ -325,10 +297,6 @@ export const PROCESS_TEXT = {
     ['Consultation initiale', 'Nous découvrons votre marque, votre marché et ce qui vous manque.'], ['Stratégie', 'Nous fixons objectifs, canaux et qui coordonne chaque partie.'],
     ['Design et exécution', 'Nos spécialistes passent à l’action.'], ['Lancement', 'Nous mettons en ligne et mesurons dès le premier jour.'],
     ['Optimisation', 'Nous ajustons avec les données et amplifions ce qui marche.']] },
-  he: { title: 'איך אנחנו עובדים', intro: 'אנחנו עובדים בחמישה שלבים, בלי הפתעות.', hint: 'גללו כדי לעבור על התהליך', step: 'שלב', center: 'אנחנו מלווים אתכם אישית בכל שלב בתהליך.', steps: [
-    ['פגישת היכרות', 'מכירים את המותג, את השוק ואת מה שחסר לכם.'], ['אסטרטגיה', 'מגדירים יעדים, ערוצים ומי מתאם כל חלק.'],
-    ['עיצוב וביצוע', 'המומחים שלנו נכנסים לעבודה.'], ['השקה', 'עולים לאוויר ומודדים מהיום הראשון.'],
-    ['אופטימיזציה', 'משפרים לפי נתונים ומגדילים את מה שעובד.']] },
 };
 
 export const PROC_ARROW = '<span class="arrow" aria-hidden="true"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8h10M9 4l4 4-4 4"/></svg></span>';
@@ -376,12 +344,6 @@ export const FAQ_TEXT = {
     ['Comment se passe l’accompagnement ? Qui est mon interlocuteur ?', 'Une équipe avec un chef de projet dédié à votre compte, des rapports clairs et des réponses rapides sur le canal de votre choix.'],
     ['Pourquoi une agence plutôt qu’une équipe interne ?', 'Nous mettons tous nos spécialistes à votre disposition, sans le coût fixe de les recruter.'],
     ['Comment on commence ?', 'Vous nous écrivez, nous faisons un appel et nous vous envoyons une proposition.']] },
-  he: { title: 'שאלות נפוצות', sub: 'שאלה נוספת? כתבו לנו.', fast: 'אנחנו עונים מהר בוואטסאפ', items: [
-    ['כמה זה עולה?', 'תלוי בהיקף. אחרי שיחה ראשונה נשלח לכם הצעת מחיר סגורה.'],
-    ['תוך כמה זמן אראה תוצאות?', 'בפרסום ממומן אנחנו רואים תוצאות תוך שבועות. ב־SEO, בין 3 ל־6 חודשים. אתר אנחנו מוסרים בין כמה שבועות לחודשיים, לפי המורכבות.'],
-    ['איך נראה הליווי? עם מי אני מדבר?', 'צוות עם מנהל פרויקט שאחראי על החשבון שלכם, דוחות ברורים ומענה מהיר בערוץ שתבחרו.'],
-    ['למה סוכנות ולא צוות פנימי?', 'אנחנו מעמידים לרשותכם את כל המומחים שלנו, בלי העלות הקבועה של להעסיק אותם.'],
-    ['איך מתחילים?', 'כותבים לנו, עושים שיחה ואנחנו שולחים לכם הצעה.']] },
 };
 
 export const FAQ_PLUS = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 2.5v11M2.5 8h11"/></svg>';
@@ -395,28 +357,24 @@ export const WA_NUMBER = '+34 603 31 66 74';
 export const FINAL_TEXT = {
   es: { t: ['Tu marca sacó un ', '6/10', '. Vamos por el ', '10/10', '.'], l: ['Hola, me llamo', 'Mi email es', 'A mi marca le falta'],
         ph: ['tu nombre', 'tu@email.com'], rot: ['SEO', 'Branding', 'Google Ads'], brand: 'Tu marca',
-        send: 'Contéstame', wa: '¿Prefieres WhatsApp?', done: '¡Gracias, {n}! Te contestamos pronto.', req: 'Completa este campo', bad: 'Revisa el email',
+        send: 'Contéstame', wa: '¿Prefieres WhatsApp?', done: '¡Gracias, {n}! Te contestamos pronto.', err: 'No pudimos enviar el mensaje. Escríbenos por WhatsApp o por email y te respondemos enseguida.', req: 'Completa este campo', bad: 'Revisa el email',
         subject: 'Nuevo contacto desde la web' },
   en: { t: ['Your brand scored a ', '6/10', '. Let’s go for ', '10/10', '.'], l: ['Hi, my name is', 'My email is', 'My brand needs'],
         ph: ['your name', 'you@email.com'], rot: ['SEO', 'Branding', 'Google Ads'], brand: 'Your brand',
-        send: 'Get back to me', wa: 'Prefer WhatsApp?', done: 'Thanks, {n}! We’ll get back to you soon.', req: 'Please fill this in', bad: 'Check your email',
+        send: 'Get back to me', wa: 'Prefer WhatsApp?', done: 'Thanks, {n}! We’ll get back to you soon.', err: 'We couldn’t send your message. Write to us on WhatsApp or by email and we’ll reply right away.', req: 'Please fill this in', bad: 'Check your email',
         subject: 'New contact from the website' },
   it: { t: ['Il tuo brand ha preso ', '6/10', '. Puntiamo al ', '10/10', '.'], l: ['Ciao, mi chiamo', 'La mia email è', 'Al mio brand manca'],
         ph: ['il tuo nome', 'tu@email.com'], rot: ['SEO', 'Branding', 'Google Ads'], brand: 'Il tuo brand',
-        send: 'Rispondimi', wa: 'Preferisci WhatsApp?', done: 'Grazie, {n}! Ti rispondiamo presto.', req: 'Compila questo campo', bad: 'Controlla l’email',
+        send: 'Rispondimi', wa: 'Preferisci WhatsApp?', done: 'Grazie, {n}! Ti rispondiamo presto.', err: 'Non siamo riusciti a inviare il messaggio. Scrivici su WhatsApp o via email e ti rispondiamo subito.', req: 'Compila questo campo', bad: 'Controlla l’email',
         subject: 'Nuovo contatto dal sito' },
   de: { t: ['Deine Marke hat eine ', '6/10', '. Holen wir die ', '10/10', '.'], l: ['Hallo, ich heiße', 'Meine E‑Mail ist', 'Meiner Marke fehlt'],
         ph: ['dein Name', 'du@email.com'], rot: ['SEO', 'Branding', 'Google Ads'], brand: 'Deine Marke',
-        send: 'Antwortet mir', wa: 'Lieber WhatsApp?', done: 'Danke, {n}! Wir melden uns bald.', req: 'Bitte ausfüllen', bad: 'E-Mail prüfen',
+        send: 'Antwortet mir', wa: 'Lieber WhatsApp?', done: 'Danke, {n}! Wir melden uns bald.', err: 'Deine Nachricht konnte nicht gesendet werden. Schreib uns per WhatsApp oder E-Mail, wir antworten sofort.', req: 'Bitte ausfüllen', bad: 'E-Mail prüfen',
         subject: 'Neuer Kontakt über die Website' },
   fr: { t: ['Votre marque a eu ', '6/10', '. Visons ', '10/10', '.'], l: ['Bonjour, je m’appelle', 'Mon email est', 'Il manque à ma marque'],
         ph: ['votre nom', 'vous@email.com'], rot: ['SEO', 'Branding', 'Google Ads'], brand: 'Votre marque',
-        send: 'Répondez-moi', wa: 'Vous préférez WhatsApp ?', done: 'Merci, {n} ! Nous vous répondons vite.', req: 'Champ obligatoire', bad: 'Vérifiez l’email',
+        send: 'Répondez-moi', wa: 'Vous préférez WhatsApp ?', done: 'Merci, {n} ! Nous vous répondons vite.', err: 'Nous n’avons pas pu envoyer votre message. Écrivez-nous sur WhatsApp ou par email, nous vous répondons tout de suite.', req: 'Champ obligatoire', bad: 'Vérifiez l’email',
         subject: 'Nouveau contact depuis le site' },
-  he: { t: ['המותג שלכם קיבל ', '6/10', '. בואו נגיע ל־', '10/10', '.'], l: ['שלום, קוראים לי', 'המייל שלי', 'למותג שלי חסר'],
-        ph: ['השם שלכם', 'you@email.com'], rot: ['SEO', 'Branding', 'Google Ads'], brand: 'המותג שלכם',
-        send: 'תענו לי', wa: 'מעדיפים וואטסאפ?', done: 'תודה, {n}! נחזור אליכם בקרוב.', req: 'נא למלא שדה זה', bad: 'בדקו את המייל',
-        subject: 'פנייה חדשה מהאתר' },
 };
 
 export const CHECK_SVG = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7"/></svg>';
@@ -428,7 +386,6 @@ export const FOOT_TEXT = {
   it: { pitch: ['Puntiamo al ', '10/10', '?'], nav: 'Navigazione', offices: 'Uffici', contact: 'Contatti', rights: 'Tutti i diritti riservati.', top: 'Torna su', c: ['Spagna', 'Argentina', 'USA'] },
   de: { pitch: ['Holen wir die ', '10/10', '?'], nav: 'Navigation', offices: 'Büros', contact: 'Kontakt', rights: 'Alle Rechte vorbehalten.', top: 'Nach oben', c: ['Spanien', 'Argentinien', 'USA'] },
   fr: { pitch: ['On vise le ', '10/10', ' ?'], nav: 'Navigation', offices: 'Bureaux', contact: 'Contact', rights: 'Tous droits réservés.', top: 'Haut de page', c: ['Espagne', 'Argentine', 'États-Unis'] },
-  he: { pitch: ['מגיעים ל־', '10/10', '?'], nav: 'ניווט', offices: 'משרדים', contact: 'צור קשר', rights: 'כל הזכויות שמורות.', top: 'חזרה למעלה', c: ['ספרד', 'ארגנטינה', 'ארה״ב', 'ישראל'] },
 };
 
 export const BLOG_URL = ''; // Con la dirección cargada, aparece "Blog" en la navegación del footer

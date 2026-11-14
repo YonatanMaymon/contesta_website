@@ -1,11 +1,16 @@
-// Cloudflare deploy config: the site is fully static, so Cloudflare only serves the files in dist/.
+// Cloudflare: la web es estática (dist/) y un Worker chico recibe el formulario en /api/contact.
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "contesta-website",
+  "main": "worker/index.js",
   "compatibility_date": "2026-11-01",
   "assets": {
     "directory": "./dist",
-    // Serve dist/404.html with a 404 status for unknown URLs
+    "binding": "ASSETS",
+    // Solo /api/* pasa por el Worker; todo lo demás se sirve directo
+    "run_worker_first": ["/api/*"],
+    // dist/404.html con estado 404 para URLs que no existen
     "not_found_handling": "404-page"
-  }
+  },
+  "observability": { "enabled": true }
 }
